@@ -1,12 +1,19 @@
-video_path='data/trottier.MOV';
-impersec=1/2;
-%Get Images from video
-%images = getImages(videopath,impersec);
+load 'data/cameraparams.mat';
+img_dir = 'data/home_desk';
 
-I1 = imread('data/image1.JPG');
-I2 = imread('data/image2.JPG');
-[matched1,matched2] = findSURFfeatures( I1,I2,0 );
-[ tform1, tform2 ] = getTransformations( matched1, matched2, I1, I2, 0 );
-[ I2Rect, I1Rect ] = rectify(I1, I2, tform1, tform2, 0);
-disparityMap = getdisparity(I1Rect, I2Rect,1);
-%pointcloud( disparityMap, I2Rect )
+%read two images
+I1 = imread(strcat(img_dir,'/1.JPG'));
+I2 = imread(strcat(img_dir,'/2.JPG'));
+
+%undistort images
+[I1,I2]=undistortedImage(I1,I2,cameraParams,0);
+
+%find corresponding points
+[matched1,matched2] = findSURFfeatures( I1,I2, 0 );
+
+[orient, loc ] = getLocOrientation( matched1, matched2, I1, I2, cameraParams, 0 );
+
+ptCloud = getpointCloud( I1, I2 , orient, loc, cameraParams );
+
+
+plotptCloud( ptCloud, orient, loc );

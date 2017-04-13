@@ -1,0 +1,9 @@
+load 'data/cameraparams.mat';
+img_dir = 'data/home_desk';
+I1 = imread(strcat(img_dir,'1.JPG'));
+I2 = imread(strcat(img_dir,'2.JPG'));
+[matched1,matched2] = findSURFfeatures( I1,I2,0 );
+[ tform1, tform2 ] = getTransformations( matched1, matched2, I1, I2, 0 );
+[ I2Rect, I1Rect ] = rectify(I1, I2, tform1, tform2, 0);
+disparityMap = getdisparity(I1Rect, I2Rect,1);
+%pointcloud( disparityMap, I2Rect )
