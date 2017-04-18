@@ -11,9 +11,9 @@ I2 = imread(strcat(img_dir,'/2.JPG'));
 %find corresponding points
 [matched1,matched2] = findSURFfeatures( I1,I2, 0 );
 
-[orient, loc ] = getLocOrientation( matched1, matched2, I1, I2, cameraParams, 0 );
+%[orient, loc ] = getLocOrientation( matched1, matched2, I1, I2, cameraParams, 0 );
 
-ptCloud = getpointCloud( I1, I2 , orient, loc, cameraParams );
+%ptCloud = getpointCloud( I1, I2 , orient, loc, cameraParams );
 
 
-plotptCloud( ptCloud, orient, loc );
+%plotptCloud( ptCloud, orient, loc );
