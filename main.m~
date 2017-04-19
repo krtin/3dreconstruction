@@ -38,22 +38,18 @@ disparityMap = disparity(rgb2gray(J1), rgb2gray(J2));
 %figure
 %imshow(disparityMap,[0,64],'InitialMagnification',50);
 
-xyzPoints = reconstructScene(disparityMap,stereoParams);
+pointCloud = reconstructScene(disparityMap,stereoParams);
 
-%{
-X = xyzPoints(:,:,1);
-Y = xyzPoints(:,:,2);
-Z = xyzPoints(:,:,3);
 
-R = J1(:,:,1);
-G = J1(:,:,2);
-B = J1(:,:,3);
-C = [R(:) G(:) B(:)];
-%}
-ptcloud = pointCloud(xyzPoints,'Color',J1);
 
-pcshow(ptcloud);
+X = pointCloud(:, :, 1);
 
+Y = pointCloud(:, :, 2);
+
+Z = pointCloud(:, :, 3);
+
+C = J1(:);
+scatter3(X(:),Y(:),Z(:),'',C);
 
 
 
