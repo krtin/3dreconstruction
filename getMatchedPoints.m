@@ -1,4 +1,4 @@
-function [ matchedPoints1,matchedPoints2 ] = getMatchedPoints( I1, I2 )
+function [ matchedPoints1,matchedPoints2 ] = getMatchedPoints( I1, I2, show )
 %GETMATCHEDPOINTS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -16,6 +16,11 @@ function [ matchedPoints1,matchedPoints2 ] = getMatchedPoints( I1, I2 )
     [imagePoints2, validIdx] = step(tracker, I2);
     matchedPoints1 = imagePoints1(validIdx, :);
     matchedPoints2 = imagePoints2(validIdx, :);
-
+    
+    if show
+        figure;
+        showMatchedFeatures(I1, I2, matchedPoints1, matchedPoints2);
+        legend('Matched points in I1', 'Matched points in I2');
+    end
 end
 

@@ -3,6 +3,7 @@ img_dir = 'data/library';
 file1 = strcat(img_dir,'/1.JPG');
 file2 = strcat(img_dir,'/2.JPG');
 out_file = 'output/library';
+save = 0;
 
 %read two images
 I1 = imread(file1);
@@ -17,11 +18,11 @@ cameraParams2 = spawnCameraParam(file2);
 
 %find corresponding points
 %[matched1,matched2] = findSURFfeatures(I1,I2, 0 );
-[matched1,matched2] = getMatchedPoints(I1, I2);
+[matched1,matched2] = getMatchedPoints(I1, I2, 0);
 
 %get orientation and location
 %[orient, loc ] = getLocOrientation( matched1, matched2, I1, I2, cameraParams1, cameraParams2, 0 );
-[orient, loc ] = myLocOrientation( matched1, matched2, I1, I2, cameraParams1, cameraParams2, 0 );
+%[orient, loc ] = myLocOrientation( matched1, matched2, I1, I2, cameraParams1, cameraParams2, 0 );
 
 
 %stereoparams
@@ -45,14 +46,14 @@ xyzPoints = reconstructScene(disparityMap,stereoParams);
 ptcloud = pointCloud(xyzPoints,'Color',J1);
 %}
 
-ptcloud = getpointCloud( I1, I2 , orient, loc, cameraParams1, cameraParams2 );
+%ptcloud = getpointCloud( I1, I2 , orient, loc, cameraParams1, cameraParams2 );
 
 if(save)
    pcwrite(ptcloud,strcat(out_file,'.pcd')); 
    save(strcat(out_file,'.mat'),'orient','loc');
 end
 
-plotptCloud( ptcloud, orient, loc );
+%plotptCloud( ptcloud, orient, loc );
 
 
 
