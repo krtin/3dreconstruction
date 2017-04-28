@@ -1,4 +1,4 @@
-function [ orient, loc ] = myLocOrientation( matchedPoints1, matchedPoints2, I1, I2,cameraParams1, cameraParams2 ,show )
+function [ orient, loc , inlieridx] = myLocOrientation( matchedPoints1, matchedPoints2, I1, I2,cameraParams1, cameraParams2 ,show )
 %MYLOCORIENTATION Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -10,7 +10,7 @@ function [ orient, loc ] = myLocOrientation( matchedPoints1, matchedPoints2, I1,
     t = 0.01;
     %d = percentage of inliers to accept the model
     d = 0.5;
-    [F,inlierPoints1, inlierPoints2]= myRansac(matchedPoints1,matchedPoints2, n,k,t,d);
+    [F,inlierPoints1, inlierPoints2, inlieridx]= myRansac(matchedPoints1,matchedPoints2, n,k,t,d);
     
     %find essential matrix
     M1 = cameraParams1.IntrinsicMatrix;
@@ -28,5 +28,6 @@ function [ orient, loc ] = myLocOrientation( matchedPoints1, matchedPoints2, I1,
     [orient, loc] = myCameraPosition(E, cameraParams1, cameraParams2, inlierPoints1,inlierPoints2);
     %use matlab function here
     %[orient, loc] = relativeCameraPose(E, cameraParams1, cameraParams2, inlierPoints1, inlierPoints2);
+   
 end
 

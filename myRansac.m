@@ -1,4 +1,4 @@
-function [ bestF,inlierPoints1, inlierPoints2 ] = myRansac(matchedPoints1,matchedPoints2, n,k,t,d )
+function [ bestF,inlierPoints1, inlierPoints2, inlieridx ] = myRansac(matchedPoints1,matchedPoints2, n,k,t,d )
 %MYRANSAC Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -74,6 +74,6 @@ function [ bestF,inlierPoints1, inlierPoints2 ] = myRansac(matchedPoints1,matche
     inlierPoints1 = inlierPoints1';
     inlierPoints2 = points2(1:2,logical(bestinliers));
     inlierPoints2 = inlierPoints2';
-    
+    inlieridx = logical(bestinliers);
 end
 

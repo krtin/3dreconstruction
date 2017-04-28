@@ -20,9 +20,6 @@ function [orient, loc] = myCameraPosition(E, cameraParams1, cameraParams2, inlie
     W=[0 -1 0; 
        1 0 0; 
        0 0 1];
-    Z = [0 1 0; 
-        -1 0 0; 
-         0 0 0];
     
     %define two rotation matrices 
     R1 = U * W' * V';
@@ -37,6 +34,7 @@ function [orient, loc] = myCameraPosition(E, cameraParams1, cameraParams2, inlie
     end
     %define translation as third col
     t = U(:,3)';
+  
     
     %find the right solution using triangulation 
     neg = zeros(1, 4);
@@ -55,9 +53,9 @@ function [orient, loc] = myCameraPosition(E, cameraParams1, cameraParams2, inlie
     %}
     for i = 1:4
         if i>2
-            R=R2';
+            R=R2;
         else
-            R=R1';
+            R=R1;
         end
         t=-t;
         %set parameters of second matrix relative to first
@@ -81,7 +79,7 @@ function [orient, loc] = myCameraPosition(E, cameraParams1, cameraParams2, inlie
     %select the right solution, with minimum inliers on the wrong side
     [~, idx] = min(neg);
     if idx<3
-        R=R1';
+        R=R1;
     end
     if mod(idx,2)==1
         t=-t;
@@ -89,7 +87,7 @@ function [orient, loc] = myCameraPosition(E, cameraParams1, cameraParams2, inlie
     t = t ./ norm(t);
 
     orient = R;
-    loc = t;
+    loc = -t;
     
     
 end
