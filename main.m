@@ -1,9 +1,9 @@
 %Image path to read images from
-image_path = dir('data/mcgillarts/*.jpg');
+image_path = dir('data/dresser/*.jpg');
 
 %directory
-imagefolder=fullfile(cd,'data/mcgillarts');
-out_file = 'output/mcgillarts';
+imagefolder=fullfile(cd,'data/dresser');
+out_file = 'output/dresser';
 savebool = 1;
 
 %extrinsic parameters for each image/camera

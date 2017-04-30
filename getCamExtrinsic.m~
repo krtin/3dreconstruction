@@ -12,11 +12,11 @@ for i = 1:noof_images
     opFullFileName=fullfile(imagefolder,opBaseFileName);
     I = imread(opFullFileName);
     cameraParams{i}=spawnCameraParam(opFullFileName);
-    images{i} = rgb2gray(I);   
-    images{i} = undistortImage(images{i}, cameraParams{i});
+    images{i} = undistortImage(rgb2gray(I), cameraParams{i});
 end
 
-
+I = images{1};
+param = cameraParams{1};
 % Detect features. Increasing 'NumOctaves' helps detect large-scale
 % features in high-resolution images. Use an ROI to eliminate spurious
 % features around the edges of the image.
@@ -41,10 +41,12 @@ vSet = addView(vSet, viewId, 'Points', prevPoints, 'Orientation', ...
 
 for i = 2:noof_images
     Iprev=I;
+    paramprev=param;
     I = images{i};
+    param = cameraParams{i};
     
     % Detect, extract and match features.
-    currPoints   = detectSURFFeatures(I, 'NumOctaves', 8, 'ROI', roi);
+    currPoints   = detectSURFFeatures(I, 'NumOctaves', 8, 'ROI', roi,'Matric');
     currFeatures = extractFeatures(I, currPoints, 'Upright', true);
     indexPairs = matchFeatures(prevFeatures, currFeatures, ...
         'MaxRatio', .7, 'Unique',  true);
@@ -58,7 +60,9 @@ for i = 2:noof_images
     % the cameras in the previous view and the current view is set to 1.
     % This will be corrected by the bundle adjustment.
     [relativeOrient, relativeLoc, inlierIdx] = myLocOrientation(...
-        matchedPoints1.Location, matchedPoints2.Location, Iprev, I);
+        matchedPoints1.Location, matchedPoints2.Location, Iprev, I, paramprev, param, 0);
+    %[relativeOrient, relativeLoc, inlierIdx] = helperEstimateRelativePose(...
+    %   matchedPoints1, matchedPoints2, param);
     
     % Add the current view to the view set.
     vSet = addView(vSet, i, 'Points', currPoints);
@@ -85,11 +89,11 @@ for i = 2:noof_images
     camPoses = poses(vSet);
 
     % Triangulate initial locations for the 3-D world points.
-    xyzPoints = triangulateMultiview(tracks, camPoses, cameraParams);
+    xyzPoints = triangulateMultiview(tracks, camPoses, param);
 
     % Refine the 3-D world points and camera poses.
     [xyzPoints, camPoses, reprojectionErrors] = bundleAdjustment(xyzPoints, ...
-        tracks, camPoses, cameraParams, 'FixedViewId', 1, ...
+        tracks, camPoses, param, 'FixedViewId', 1, ...
         'PointsUndistorted', true);
 
     % Store the refined camera poses.

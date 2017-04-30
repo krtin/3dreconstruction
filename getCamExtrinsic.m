@@ -22,7 +22,7 @@ param = cameraParams{1};
 % features around the edges of the image.
 border = 50;
 roi = [border, border, size(I, 2)- 2*border, size(I, 1)- 2*border];
-prevPoints   = detectSURFFeatures(I, 'NumOctaves', 8, 'ROI', roi);
+prevPoints   = detectSURFFeatures(I, 'NumOctaves', 8, 'ROI', roi,'MetricThreshold',100);
 
 % Extract features. Using 'Upright' features improves matching, as long as
 % the camera motion involves little or no in-plane rotation.
@@ -46,7 +46,7 @@ for i = 2:noof_images
     param = cameraParams{i};
     
     % Detect, extract and match features.
-    currPoints   = detectSURFFeatures(I, 'NumOctaves', 8, 'ROI', roi);
+    currPoints   = detectSURFFeatures(I, 'NumOctaves', 8, 'ROI', roi,'MetricThreshold',100);
     currFeatures = extractFeatures(I, currPoints, 'Upright', true);
     indexPairs = matchFeatures(prevFeatures, currFeatures, ...
         'MaxRatio', .7, 'Unique',  true);
@@ -59,10 +59,10 @@ for i = 2:noof_images
     % The pose is computed up to scale, meaning that the distance between
     % the cameras in the previous view and the current view is set to 1.
     % This will be corrected by the bundle adjustment.
-    %[relativeOrient, relativeLoc, inlierIdx] = myLocOrientation(...
-    %    matchedPoints1.Location, matchedPoints2.Location, Iprev, I, paramprev, param, 0);
-    [relativeOrient, relativeLoc, inlierIdx] = helperEstimateRelativePose(...
-        matchedPoints1, matchedPoints2, param);
+    [relativeOrient, relativeLoc, inlierIdx] = myLocOrientation(...
+        matchedPoints1.Location, matchedPoints2.Location, Iprev, I, paramprev, param, 0);
+    %[relativeOrient, relativeLoc, inlierIdx] = helperEstimateRelativePose(...
+    %   matchedPoints1, matchedPoints2, param);
     
     % Add the current view to the view set.
     vSet = addView(vSet, i, 'Points', currPoints);
